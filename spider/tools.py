@@ -74,15 +74,14 @@ class Tools:
         req = Request(url=url, headers=headers)
         html = ""
         try:
-            response = opner.open(req, timeout=2000)
-            rescode = response.getcode()  # 200为正常，如果等于403，更换代理ip
+            response = opner.open(req)
         except:
-            print("被403了，QAQ")
+            print("opner.openException")
+            return ""
         else:
-            html = response.read()#.decode("utf-8", "ignore")
-        if codetype == "utf-8":
-            return html.decode("utf-8", "ignore")
-        return html
+            if codetype == "utf-8":
+                return response.read().decode("utf-8", "ignore")
+            return response.read()
 
     def searchEleInHtml(selt, html, xpath_exp):
         tree = etree.HTML(html)
@@ -96,14 +95,14 @@ class Tools:
                 return True
         return False
 
-    def getss(self, url, module_xpath, sign_xpath,codetype):
+    def getss(self, url, module_xpath, sign_xpath, codetype):
         result = []
 
         article_name = ""
         article_url = ""
         sign_text = ""
 
-        alist = self.searchEleInHtml(self.readUrl(url,codetype), module_xpath)  # 获取模块下的所有a标签
+        alist = self.searchEleInHtml(self.readUrl(url, codetype), module_xpath)  # 获取模块下的所有a标签
         for i in alist:
             article_name_ = i
             if len(i.xpath('./text()')) != 0 and len(i.xpath('./text()')[0].strip())!=0:

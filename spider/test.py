@@ -44,12 +44,16 @@ def matchKeyword(str):
 # ["政府官网", "石家庄市教育考试院", "高中学考", "http://www.sjzjyksxx.com.cn/News.aspx?classId=4",
 #  "/html/body/form/div[4]/div[1]/div[1]/div[3]/ul/li/a", "/html/body/div[3]/div[1]/div/span"],
 #/html/body/form/div[4]/div[1]/div[1]/div[3]/ul/li[1]/a/span[1]
-url = "http://jiaoyuju.tangshan.gov.cn/tswenguangxin/shijiaoyuju1jyyw"
-#module_xpath = "/html/body/div[2]/div[2]/div[3]/div[2]/ul/li[1]/a"
-module_xpath = "/html/body/div[2]"
-sign_xpath = "/html/body/div[2]/div[2]/div[1]/div/div[2]/div[1]/span[1]"
+url = "http://jyj.chengde.gov.cn/col/col499/index.html"
+
+module_xpath = "//*[@id=\"4392\"]/script"
+#//*[@id="4392"]/div/li[1]/a
+#module_xpath = "/html/body/div[2]/div[5]/div/div[2]/ul/div/div/li[1]/a"
+
+sign_xpath = ""
 
 alist = searchEle(requesttool(url), module_xpath)  # 获取模块下的所有a标签
+# print(requesttool(url))
 print(len(alist))
 for i in alist:
     article_name_ = i.xpath('./text()')
