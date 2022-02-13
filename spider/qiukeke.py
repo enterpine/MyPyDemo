@@ -1,13 +1,15 @@
-from tools import getss
+from tools import Tools
 from conf.targetList import getTargetList
 
 if __name__ == '__main__':
 
-    tlist = getTargetList()
+    t_list = getTargetList()
 
     result = []
 
-    for line in tlist:
+    tool = Tools()
+
+    for line in t_list:
         # #   网站类型    网站名称	抓取版块/Tag	网址
         site_type = line[0]
         site_name = line[1]
@@ -15,10 +17,11 @@ if __name__ == '__main__':
         url = line[3]
         module_xpath = line[4]
         sigh_xpath = line[5]
+        codetype = ""
+        if len(line)>6:
+            codetype=line[6]
 
-
-
-        article_list = getss(url, module_xpath, sigh_xpath)
+        article_list = tool.getss(url, module_xpath, sigh_xpath,codetype)
 
         for article in article_list:
             article_name = ""
@@ -33,4 +36,3 @@ if __name__ == '__main__':
 
     for item in result:
         print(item)
-

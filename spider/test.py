@@ -18,14 +18,14 @@ def requesttool(url):
 
     req = Request(url=url, headers=headers)
     response = urlopen(req)
-    html = response.read()
+    html = response.read().decode("utf-8","ignore")
     return html
 
 
 def searchEle(html, xpath_exp):
 
     tree = etree.HTML(html)
-    res = tree.xpath("/html/body/div[2]/div[1]/table/tr/td[2]/div/div[3]/div/table/tr/td/a")
+    res = tree.xpath(xpath_exp)
 
    # res = tree.xpath("//a")
 
@@ -40,19 +40,22 @@ def matchKeyword(str):
     return False
 
 
-url = "http://jyt.hebei.gov.cn/col/1405610764482/index.html"
-module_xpath = ""
-sign_xpath=""
+# ["政府官网", "石家庄市教育考试院", "高中学考", "http://www.sjzjyksxx.com.cn/News.aspx?classId=4",
+#  "/html/body/form/div[4]/div[1]/div[1]/div[3]/ul/li/a", "/html/body/div[3]/div[1]/div/span"],
+#/html/body/form/div[4]/div[1]/div[1]/div[3]/ul/li[1]/a/span[1]
+url = "http://www.sjzjyksxx.com.cn/News.aspx?classId=4"
+module_xpath = "/html/body/form/div[4]/div[1]/div[1]/div[3]/ul/li/a"
+sign_xpath="//*[@id=\"news\"]/div[3]/div[1]/div/span"
+
 alist = searchEle(requesttool(url), module_xpath)  # 获取模块下的所有a标签
-print(alist)
 
 for i in alist:
-    article_name_ = i.xpath('./text()')
+    article_name_ = i.xpath('./node()/text()')
     article_url_ = i.xpath('./@href')
     if len(article_url_) > 0 and len(article_name_) > 0:
         article_name = article_name_[0].strip()
         article_url = article_url_[0].strip()
-        if len(article_url) > 0 and len(article_name) > 0:
+        if len(article_url) >= 0 and len(article_name) >= 0:
             # add: 判断 article_url 是相对路径还是绝对路径
             if article_url[0:4] != "http":
                 if (article_url[0] != "/"):
@@ -65,11 +68,14 @@ for i in alist:
 
             # time.sleep(40)
             sign_ = searchEle(requesttool(article_url), sign_xpath)
+
             sign_text = "-"
+
             if len(sign_) > 0:
                 sign = sign_[0].xpath('./text()')
                 if len(sign) > 0:
                     sign_text = sign[0].strip()
 
             print(article_name + " " + article_url+" "+sign_text)
-
+#/html/body/div[3]/div[1]/div/span
+# //*[@id="news"]/div[3]/div[1]/div/span
