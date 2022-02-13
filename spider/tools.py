@@ -117,7 +117,7 @@ class Tools:
                 article_url = article_url_[0].strip()
                 if len(article_url) > 0 and len(article_name) > 0:
                     # add: 判断 article_url 是相对路径还是绝对路径
-                    print(article_name + "->" + article_url)
+                    #print(article_name + "->" + article_url)
                     if article_url[0:4] != "http":
 
                         if (article_url[0] != "/"):
