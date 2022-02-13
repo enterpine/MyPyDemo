@@ -18,7 +18,8 @@ def requesttool(url):
 
     req = Request(url=url, headers=headers)
     response = urlopen(req)
-    html = response.read().decode("utf-8","ignore")
+    html = response.read().decode("utf-8")
+   # print(html)
     return html
 
 
@@ -43,14 +44,15 @@ def matchKeyword(str):
 # ["政府官网", "石家庄市教育考试院", "高中学考", "http://www.sjzjyksxx.com.cn/News.aspx?classId=4",
 #  "/html/body/form/div[4]/div[1]/div[1]/div[3]/ul/li/a", "/html/body/div[3]/div[1]/div/span"],
 #/html/body/form/div[4]/div[1]/div[1]/div[3]/ul/li[1]/a/span[1]
-url = "http://www.sjzjyksxx.com.cn/News.aspx?classId=4"
-module_xpath = "/html/body/form/div[4]/div[1]/div[1]/div[3]/ul/li/a"
-sign_xpath="//*[@id=\"news\"]/div[3]/div[1]/div/span"
+url = "http://jiaoyuju.tangshan.gov.cn/tswenguangxin/shijiaoyuju1jyyw"
+#module_xpath = "/html/body/div[2]/div[2]/div[3]/div[2]/ul/li[1]/a"
+module_xpath = "/html/body/div[2]"
+sign_xpath = "/html/body/div[2]/div[2]/div[1]/div/div[2]/div[1]/span[1]"
 
 alist = searchEle(requesttool(url), module_xpath)  # 获取模块下的所有a标签
-
+print(len(alist))
 for i in alist:
-    article_name_ = i.xpath('./node()/text()')
+    article_name_ = i.xpath('./text()')
     article_url_ = i.xpath('./@href')
     if len(article_url_) > 0 and len(article_name_) > 0:
         article_name = article_name_[0].strip()
