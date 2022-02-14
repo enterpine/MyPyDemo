@@ -23,16 +23,17 @@ if __name__ == '__main__':
 
         article_list = tool.getss(url, module_xpath, sigh_xpath,codetype)
 
-        for article in article_list:
-            article_name = ""
-            article_url = ""
-            sign_text = ""
-            article_name = article[0]
-            article_url = article[1]
-            sign_text = article[2]
+        if article_list != None:
+            for article in article_list:
+                article_name = ""
+                article_url = ""
+                sign_text = ""
+                article_name = article[0]
+                article_url = article[1]
+                sign_text = article[2]
 
-            if article_name.strip() != "" and article_url.strip() != "":
-                result.append([site_type, site_name, module_name, url, article_name, article_url, sign_text])
+                if article_name.strip() != "" and article_url.strip() != "":
+                    result.append([site_type, site_name, module_name, url, article_name, article_url, sign_text])
 
     for item in result:
         print(item)

@@ -2,7 +2,7 @@ import random
 import urllib.request
 from urllib.request import urlopen
 from urllib.request import Request
-
+import re
 from lxml import etree
 from conf.proxyIp import getIp
 import time
@@ -10,11 +10,11 @@ import time
 
 class Tools:
     proxyObjectList = []
-    proxy_init:dict
+    proxy_init: dict
+
     def __init__(self):
         self.proxyObjectList = self.getProxyObjectList()
         self.proxy_init = random.choice(self.proxyObjectList)
-
 
     def getProxyObjectList(self):
 
@@ -36,7 +36,7 @@ class Tools:
 
         return result
 
-    def readUrl(self, url,codetype):
+    def readUrl(self, url, codetype):
 
         pc_agent = [
             "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50",
@@ -84,9 +84,12 @@ class Tools:
             return response.read()
 
     def searchEleInHtml(selt, html, xpath_exp):
-        tree = etree.HTML(html)
-        res = tree.xpath(xpath_exp)
-        return res
+        if html != "":
+            tree = etree.HTML(html)
+            res = tree.xpath(xpath_exp)
+            return res
+        else:
+            return None
 
     def matchKeyword(str):
         keywords = ['中考', '高考', '高一', '高二', '高三', '高中生', '双减', '寒假', '暑假']
@@ -98,14 +101,22 @@ class Tools:
     def getss(self, url, module_xpath, sign_xpath, codetype):
         result = []
 
-        article_name = ""
-        article_url = ""
-        sign_text = ""
+        retry_times = 5
 
         alist = self.searchEleInHtml(self.readUrl(url, codetype), module_xpath)  # 获取模块下的所有a标签
+
+        while alist == None and retry_times > 0:
+            print("Retryre" + "url\n" + "try_times_remain" + retry_times)
+            self.proxyObjectList = self.getProxyObjectList()
+            self.proxy_init = random.choice(self.proxyObjectList)
+            alist = self.searchEleInHtml(self.readUrl(url, codetype), module_xpath)
+            retry_times = retry_times - 1
+
+        if alist == None:
+            return None
         for i in alist:
             article_name_ = i
-            if len(i.xpath('./text()')) != 0 and len(i.xpath('./text()')[0].strip())!=0:
+            if len(i.xpath('./text()')) != 0 and len(i.xpath('./text()')[0].strip()) != 0:
                 article_name_ = i.xpath('./text()')
             else:
                 article_name_ = i.xpath('./node()/text()')
@@ -116,7 +127,7 @@ class Tools:
                 article_url = article_url_[0].strip()
                 if len(article_url) > 0 and len(article_name) > 0:
                     # add: 判断 article_url 是相对路径还是绝对路径
-                    #print(article_name + "->" + article_url)
+                    # print(article_name + "->" + article_url)
                     if article_url[0:4] != "http":
 
                         if (article_url[0] != "/"):
@@ -130,14 +141,19 @@ class Tools:
                     # time.sleep(40)
                     sign_text = "-"
                     if sign_xpath != "":
-                        sign_ = self.searchEleInHtml(self.readUrl(article_url,codetype), sign_xpath)
+                        sign_ = self.searchEleInHtml(self.readUrl(article_url, codetype), sign_xpath)
 
                         if len(sign_) > 0:
                             sign = sign_[0].xpath('./text()')
                             if len(sign) > 0:
                                 sign_text = sign[0].strip()
-                                #print(sign_text)
+                                pattern1 = r"(\d{4}-\d{1,2}-\d{1,2})"
+                                pattern2 = r"(\d{4}/\d{1,2}-\d{1,2})"
+                                if re.search(pattern1, sign_text) != None:
+                                    sign_text = re.search(pattern1, sign_text).group(0)
+                                elif re.search(pattern2, sign_text) != None:
+                                    sign_text = re.search(pattern2, sign_text).group(0)
 
                     result.append([article_name, article_url, sign_text])
-                    #time.sleep(4)
+
         return result

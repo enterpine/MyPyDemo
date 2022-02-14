@@ -41,14 +41,16 @@ def matchKeyword(str):
     return False
 
 
-# ["政府官网", "石家庄市教育考试院", "高中学考", "http://www.sjzjyksxx.com.cn/News.aspx?classId=4",
-#  "/html/body/form/div[4]/div[1]/div[1]/div[3]/ul/li/a", "/html/body/div[3]/div[1]/div/span"],
-#/html/body/form/div[4]/div[1]/div[1]/div[3]/ul/li[1]/a/span[1]
+["政府官网", "中华人民共和国教育部", "媒体聚焦", "http://www.moe.gov.cn/jyb_xwfb/s5147/",
+ "//*[@id=\"list\"]/li[2]/a", "//*[@id=\"moe-detail-box\"]/div[1]"],
+
+["政府官网", "中国教育考试网", "教育要闻", "http://www.moe.gov.cn/jyb_xwfb/s271/",
+ "//*[@id=\"list\"]/li[2]/a", "//*[@id=\"moe-detail-box\"]/div[1]"],
+
 url = "http://jyj.chengde.gov.cn/col/col499/index.html"
 
 module_xpath = "//*[@id=\"4392\"]/script"
-#//*[@id="4392"]/div/li[1]/a
-#module_xpath = "/html/body/div[2]/div[5]/div/div[2]/ul/div/div/li[1]/a"
+
 
 sign_xpath = ""
 
