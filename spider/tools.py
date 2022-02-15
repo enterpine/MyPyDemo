@@ -13,6 +13,8 @@ class Tools:
     proxy_init: dict
 
     def __init__(self):
+        import ssl
+        ssl._create_default_https_context = ssl._create_unverified_context
         self.proxyObjectList = self.getProxyObjectList()
         self.proxy_init = random.choice(self.proxyObjectList)
 

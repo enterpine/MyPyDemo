@@ -40,19 +40,14 @@ def matchKeyword(str):
             return True
     return False
 
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
+url = "https://news.eol.cn"
 
-["政府官网", "中华人民共和国教育部", "媒体聚焦", "http://www.moe.gov.cn/jyb_xwfb/s5147/",
- "//*[@id=\"list\"]/li[2]/a", "//*[@id=\"moe-detail-box\"]/div[1]"],
-
-["政府官网", "中国教育考试网", "教育要闻", "http://www.moe.gov.cn/jyb_xwfb/s271/",
- "//*[@id=\"list\"]/li[2]/a", "//*[@id=\"moe-detail-box\"]/div[1]"],
-
-url = "http://jyj.chengde.gov.cn/col/col499/index.html"
-
-module_xpath = "//*[@id=\"4392\"]/script"
+module_xpath = "/html/body/div[4]/div[2]/div/div[2]/div/div/div/div/a"
 
 
-sign_xpath = ""
+sign_xpath = "/html/body/div[4]/div[1]/div[4]/div[1]"
 
 alist = searchEle(requesttool(url), module_xpath)  # 获取模块下的所有a标签
 # print(requesttool(url))
