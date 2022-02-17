@@ -3,6 +3,7 @@ import urllib.request
 from urllib.request import urlopen
 from urllib.request import Request
 import re
+from conf.confReader import ConfReader
 from lxml import etree
 import time
 
@@ -17,13 +18,15 @@ class Tools:
         self.proxyObjectList = self.getProxyObjectList()
         self.proxy_init = random.choice(self.proxyObjectList)
 
+
     def getProxyObjectList(self):
 
         headers = {
             'User-Agent': 'User-Agent:Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50'
         }
 
-        proxyApiUrl = "http://webapi.http.zhimacangku.com/getip?num=5&type=1&pro=0&city=0&yys=0&port=1&time=1&ts=0&ys=0&cs=0&lb=1&sb=0&pb=5&mr=1&regions="
+        confReader = ConfReader()
+        proxyApiUrl = confReader.proxyApiUrl
 
         req = Request(url=proxyApiUrl, headers=headers)
         proxyStr = urlopen(req).read().decode()
@@ -107,7 +110,7 @@ class Tools:
         alist = self.searchEleInHtml(self.readUrl(url, codetype), module_xpath)  # 获取模块下的所有a标签
 
         while alist == None and retry_times > 0:
-            print("Retryre" + "url\n" + "try_times_remain" + retry_times)
+            print("Retryre" + "url\n" + "try_times_remain" + str(retry_times))
             self.proxyObjectList = self.getProxyObjectList()
             self.proxy_init = random.choice(self.proxyObjectList)
             alist = self.searchEleInHtml(self.readUrl(url, codetype), module_xpath)
