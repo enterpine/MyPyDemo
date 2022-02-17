@@ -18,10 +18,14 @@ if __name__ == '__main__':
         module_xpath = line[4]
         sigh_xpath = line[5]
         codetype = ""
-        if len(line)>6:
-            codetype=line[6]
+        if len(line) > 6:
+            codetype = line[6]
 
-        article_list = tool.getss(url, module_xpath, sigh_xpath,codetype)
+        datetype = ""
+        if len(line) > 7:
+            datetype = line[7]
+
+        article_list = tool.getss(url, module_xpath, sigh_xpath, codetype, datetype)
 
         if article_list != None:
             for article in article_list:

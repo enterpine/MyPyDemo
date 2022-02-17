@@ -4,7 +4,6 @@ from urllib.request import urlopen
 from urllib.request import Request
 import re
 from lxml import etree
-from conf.proxyIp import getIp
 import time
 
 
@@ -100,7 +99,7 @@ class Tools:
                 return True
         return False
 
-    def getss(self, url, module_xpath, sign_xpath, codetype):
+    def getss(self, url, module_xpath, sign_xpath, codetype, datetype):
         result = []
 
         retry_times = 5
@@ -117,6 +116,7 @@ class Tools:
         if alist == None:
             return None
         for i in alist:
+
             article_name_ = i
             if len(i.xpath('./text()')) != 0 and len(i.xpath('./text()')[0].strip()) != 0:
                 article_name_ = i.xpath('./text()')
@@ -132,30 +132,52 @@ class Tools:
                     # print(article_name + "->" + article_url)
                     if article_url[0:4] != "http":
 
-                        if (article_url[0] != "/"):
-                            article_url = url + article_url
+                        if (article_url[0] != "/"):  # ./  ../  当前页面 + 相对路径。 如果当前页面没有/
+                            if url[len(url) - 1] == '/':
+                                article_url = url + article_url
+                            else:
+                                article_url = url + '/' + article_url
                         else:
-                            a = url.split('//')[0]
+                            a = url.split('//')[0]  # 根目录上 加 相对路径
                             b = url.split("//")[1].split('/')[0]
                             article_url = a + "//" + b + article_url
+
                     # 获取新闻时间
 
                     # time.sleep(40)
                     sign_text = "-"
-                    if sign_xpath != "":
-                        sign_ = self.searchEleInHtml(self.readUrl(article_url, codetype), sign_xpath)
+                    if datetype == "":
+                        if sign_xpath != "":
+                            sign_ = self.searchEleInHtml(self.readUrl(article_url, codetype), sign_xpath)
 
+                            if len(sign_) > 0:
+                                sign = sign_[0].xpath('./text()')
+                                if len(sign) > 0:
+                                    sign_text = sign[0].strip()
+                                    pattern1 = r"(\d{4}-\d{1,2}-\d{1,2})"
+                                    pattern2 = r"(\d{4}/\d{1,2}/\d{1,2})"
+                                    pattern3 = r"(\d{4}.\d{1,2}.\d{1,2})"
+                                    if re.search(pattern1, sign_text) != None:
+                                        sign_text = re.search(pattern1, sign_text).group(0)
+                                    elif re.search(pattern2, sign_text) != None:
+                                        sign_text = re.search(pattern2, sign_text).group(0).replace('/', '-')
+                                    elif re.search(pattern3, sign_text) != None:
+                                        sign_text = re.search(pattern2, sign_text).group(0).replace('.', '-')
+                    else:
+                        sign_ = i.xpath(sign_xpath)
                         if len(sign_) > 0:
                             sign = sign_[0].xpath('./text()')
                             if len(sign) > 0:
                                 sign_text = sign[0].strip()
                                 pattern1 = r"(\d{4}-\d{1,2}-\d{1,2})"
-                                pattern2 = r"(\d{4}/\d{1,2}-\d{1,2})"
+                                pattern2 = r"(\d{4}/\d{1,2}/\d{1,2})"
+                                pattern3 = r"(\d{4}.\d{1,2}.\d{1,2})"
                                 if re.search(pattern1, sign_text) != None:
                                     sign_text = re.search(pattern1, sign_text).group(0)
                                 elif re.search(pattern2, sign_text) != None:
-                                    sign_text = re.search(pattern2, sign_text).group(0)
-
+                                    sign_text = re.search(pattern2, sign_text).group(0).replace('/', '-')
+                                elif re.search(pattern3, sign_text) != None:
+                                    sign_text = re.search(pattern2, sign_text).group(0).replace('.', '-')
                     result.append([article_name, article_url, sign_text])
 
         return result
