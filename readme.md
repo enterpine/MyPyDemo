@@ -1,12 +1,13 @@
-### 1、环境
-python3.8
-### 2、pip安装包
+## 1、环境
+ python3.8
+
+## 2、pip安装包
 ```
 lxml==4.7.1
 PyMySQL==1.0.2
 urllib3==1.26.8
 ```
-### 3、结果落地表
+## 3、结果落地表
 ```sql
 create table `t_hebei_newslist_spider_result`(
     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增主键',
@@ -23,7 +24,13 @@ create table `t_hebei_newslist_spider_result`(
     UNIQUE KEY `uniq_news` (`news_url`)
 )  ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='河北教育新闻爬虫结果表';
 ```
-### 4、配置修改
-+ path:   /spider/conf/conf.ini
-+ 修改数据库配置 以及 代理获取程序即可。
+## 4、配置修改
+### 4.1 修改代码中配置文件路径 spider/conf/confReader.py line:16 
+
+### 4.2 修改配置文件
++ 配置文件路径:   /spider/conf/conf.ini
++ 修改数据库配置  以及 获取代理ip的url。
 + 当前代码中代理ip获取后，使用"/r/n"分割。如需要修改，可在spider/tools.py line:33处修改
+
+## 5、启动程序
+python ./spider/run.py
